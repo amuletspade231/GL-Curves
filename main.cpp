@@ -1,6 +1,6 @@
-// Name:
-// Quarter, Year:
-// Lab:
+// Name: Amanda Cao
+// Quarter, Year: Winter, 2019
+// Lab: 7
 //
 // This file is to be modified by the student.
 // main.cpp
@@ -20,20 +20,52 @@
 using namespace std;
 const int WINDOW_WIDTH = 800;
 const int WINDOW_HEIGHT = 800;
+vector<vec2> CtrlPts;
 
+float factorial(int n) {
+    if ( n==0 || n==1 ) { return 1; }
+
+    return n * factorial(n-1);
+}
+
+float combination(int n, int k) {
+    return factorial(n) / (factorial(k) * factorial(n-k));
+}
+
+float binomial(int n, int k, float t) {
+    return combination(n,k) * pow(t,k) * pow(1-t,n-k);
+}
+
+void Bezier(float t, float &px, float &py) {
+    int n = CtrlPts.size();
+    vec2 point(px,py);
+    for(int i = 0; i < n; ++i) {
+	point += binomial(n,i,t) * CtrlPts.at(i);
+    }
+    px = point[0];
+    py = point[1];
+
+    return;
+}
 
 void GL_render()
 {
     glClear(GL_COLOR_BUFFER_BIT);
     glutSwapBuffers();
 
-    glBegin(GL_LINES);
+    glBegin(GL_LINE_STRIP);
     glColor3f(1.0f,0.0f,0.0f);
     // just for example, remove if desired
-    glVertex2f(-.5f,-.5f);
+    /*glVertex2f(-.5f,-.5f);
     glVertex2f(.5f,-.5f);
     glVertex2f(.5f,.5f);
-    glVertex2f(-.5f,.5f);
+    glVertex2f(-.5f,.5f);*/
+    for(float t = 0; t < 1; t += 0.01) {
+        float x = 0;
+        float y = 0;
+	Bezier(t,x,y);
+	glVertex2f(x,y);
+    }
     glEnd();
     glFlush();
 }
@@ -51,6 +83,7 @@ void GL_mouse(int button,int state,int x,int y)
     if(button==GLUT_LEFT_BUTTON && state==GLUT_DOWN){
         double px,py,dummy_z; // we don't care about the z-value but need something to pass in
         gluUnProject(x,y,0,mv_mat,proj_mat,vp_mat,&px,&py,&dummy_z);
+	CtrlPts.push_back(vec2(px,py));
         glutPostRedisplay();
     }
 }
@@ -64,7 +97,7 @@ void GLInit(int* argc, char** argv)
 
     //glMatrixMode(GL_PROJECTION_MATRIX);
     //glOrtho(0, WINDOW_WIDTH, 0, WINDOW_HEIGHT, -1, 1);
-    glutCreateWindow("CS 130 - <Insert Name Here>");
+    glutCreateWindow("CS 130 - Amanda Cao");
     glutDisplayFunc(GL_render);
     glutMouseFunc(GL_mouse);
 }

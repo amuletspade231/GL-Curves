@@ -67,17 +67,6 @@ void GLInit(int* argc, char** argv)
     glutCreateWindow("CS 130 - <Insert Name Here>");
     glutDisplayFunc(GL_render);
     glutMouseFunc(GL_mouse);
-fndef __APPLE__
-#include <GL/glut.h>
-#else
-#include <GLUT/glut.h>
-#endif
-
-#include <vector>
-#include <cstdio>
-#include <math.h>
-#include "vec.h"
-#include <iostream>
 }
 
 int main(int argc, char** argv)
